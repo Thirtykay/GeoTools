@@ -19,142 +19,24 @@
 #include <iostream>
 #include <string>
 
-#include <GeographicLib/MGRS.hpp>
-#include <GeographicLib/UTMUPS.hpp>
 #include "../headers/func.hpp"
 
-GeographicLib::MGRS *MGRS;
-GeographicLib::UTMUPS *UTMUPS;
-
+GeoTools *geoTools;
 
 int main(int argc, char const *argv[])
 {
 
-    std::cout << "GeoTools Copyright (C) 2018 Thirtykay" << std::endl;
-    std::cout << "This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'." << std::endl;
-    std::cout << "This is free software, and you are welcome to redistribute it" << std::endl;
-    std::cout << "under certain conditions; type `show c' for details. " << std::endl;
+    bool firstStart = true;
 
-    //My coords, Pegomas 43.5985, 6.9303
-    float lat, lon;
-    //UTM Zone, no init, MGRS Grid precision
-    int zone, prec;
-    //North or South hemisphere
-    bool northp;
-    //Easting = x, Northing = y
-    double x, y;
-
-    try
+    if(firstStart == true)
     {
-
-        std::cout << "MGRS Start-Up" << std::endl;
-        MGRS->Check();
-
-    }
-    catch(const std::exception& e)
-    {
-        std::cerr << "Caught exception on MGRS Start-Up: " << e.what() << "\n";
-        return 1;
+        std::cout << "GeoTools Copyright (C) 2018 Thirtykay" << std::endl;
+        std::cout << "This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'." << std::endl;
+        std::cout << "This is free software, and you are welcome to redistribute it" << std::endl;
+        std::cout << "under certain conditions; type `show c' for details. \n" << std::endl;
     }
 
-    char cont = 'Y';
-
-        std::cout << "MGRS Converter ready" << std::endl;
-        std::cout << "Enter your Lat & Long coords" << std::endl;
-
-    while(cont == 'Y')
-    {
-        bool retryLat = true;
-        bool retryLon = true;
-        bool retryPrec = true;
-
-        while(retryLat == true)
-        {
-            std::cout << "Latitude : ";
-            std::cin >> lat;
-
-            if(lat < -90 || lat > 90)
-            {
-                std::cout << "Bad value for lat" << std::endl;
-                std::cout << "Valid range for lat is -90d to 90d" << std::endl;
-            }
-            else
-            {
-                retryLat = false;
-            }
-        }
-
-        while(retryLon == true)
-        {
-            std::cout << "Longitude : ";
-            std::cin >> lon;
-
-            if(lon < -180 || lon > 180)
-            {
-                std::cout << "Bad value for lat" << std::endl;
-                std::cout << "Valid range for lat is -180d to 180d" << std::endl;
-            }
-            else
-            {
-                retryLon = false;
-            }
-        }
-
-        try
-        {
-            //Converting Lat/Long to UTMUPS
-            UTMUPS->Forward(lat, lon, zone, northp, x, y);
-        }
-        catch(const std::exception &e)
-        {
-            std::cerr << "Caught exception on UTM/UPS Conversion: " << e.what() << "\n";
-            std::cout << "Exiting program" << std::endl;
-            exit(0);
-        }
-
-        while(retryPrec == true)
-        {
-            std::cout << "Enter the required precision : ";
-            std::cin >> prec;
-
-            if(prec < 3 || prec > 5)
-            {
-                std::cout << "Bad value for prec" << std::endl;
-                std::cout << "Valid value for prec are 3, 4 and 5" << std::endl;
-            }
-            else
-            {
-                retryPrec = false;
-            }
-        }
-
-        //Init of the new MGRS string
-        std::string mgrs;
-
-        try
-        {
-            //Converting UTMUPS to MGRS
-            MGRS->Forward(zone, northp, x, y, lat, prec, mgrs);
-        }
-        catch(const std::exception &e)
-        {
-            std::cerr << "Caught exception on MGRS Conversion: " << e.what() << "\n";
-            std::cout << "Exiting program" << std::endl;
-            exit(0);
-        }
-
-        std::cout << "Conversion done !" << std::endl;
-        std::cout << "Your MGRS coords: ";
-        //Format the mgrs string to a user-readable string
-        format(&mgrs, prec);
-
-        //Asking user if he want to launch the program again
-        std::cout << "New conversion ? (Y/n): ";
-        std::cin >> cont;
-
-    }
-
-    std::cout << "See you later" << std::endl;
-
+    geoTools->mgrsConvert();
+    
     return 0;
 }

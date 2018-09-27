@@ -22,6 +22,22 @@
 #include <iostream>
 #include <string>
 
-void format(std::string* mgrs, int prec);
+#include <GeographicLib/MGRS.hpp>
+#include <GeographicLib/UTMUPS.hpp>
+
+//test
+class GeoTools
+{
+
+    public:
+        GeoTools();
+        ~GeoTools();
+        void format(std::string* mgrs, int prec);
+        void mgrsConvert();
+
+        GeographicLib::MGRS *MGRS;
+        GeographicLib::UTMUPS *UTMUPS;
+
+};
 
 #endif //FUNC_HPP
