@@ -18,6 +18,11 @@
 
 #include "../headers/func.hpp"
 
+/*
+* Static Member Function - do not call
+* Format MGRS string from 38TLPXXXXXXXXX to 38T LP XXXXX XXXXX
+* param : *mgrs the non formated mgrs string, prec the required precison 
+*/
 void GeoTools::format(std::string* mgrs, int prec)
 {
     switch (prec)
@@ -50,7 +55,11 @@ void GeoTools::format(std::string* mgrs, int prec)
     }
 }
 
-void GeoTools::mgrsConvert()
+/*
+* Convert any Latitude/Longitude coords type to a MGRS coord 
+* param : void
+*/
+void GeoTools::mgrsConvert(void)
 {
 
     //My coords, Pegomas 43.5985, 6.9303
@@ -180,4 +189,94 @@ void GeoTools::mgrsConvert()
     std::cout << "See you later" << std::endl;
 
 
+}
+
+/* @WIP
+* Convert any Latitude/Longitude coords type to a MGRS coord 
+* param : void
+*/
+void GeoTools::utmConvert(void)
+{
+
+    float lat = 33.3, lon = 44.4;
+    int zone;
+    bool northp;
+    double x, y;
+
+    char cont = 'Y';
+
+        std::cout << "MGRS Converter ready" << std::endl;
+        std::cout << "Enter your Lat & Long coords" << std::endl;
+
+    while(cont == 'Y')
+    {
+        bool retryLat = true;
+        bool retryLon = true;
+        bool retryPrec = true;
+
+        while(retryLat == true)
+        {
+            std::cout << "Latitude : ";
+            std::cin >> lat;
+
+            if(lat < -90 || lat > 90)
+            {
+                std::cout << "Bad value for lat" << std::endl;
+                std::cout << "Valid range for lat is -90d to 90d" << std::endl;
+            }
+            else
+            {
+                retryLat = false;
+            }
+        }
+
+        while(retryLon == true)
+        {
+            std::cout << "Longitude : ";
+            std::cin >> lon;
+
+            if(lon < -180 || lon > 180)
+            {
+                std::cout << "Bad value for lat" << std::endl;
+                std::cout << "Valid range for lat is -180d to 180d" << std::endl;
+            }
+            else
+            {
+                retryLon = false;
+            }
+        }
+
+    try
+    {
+
+        UTMUPS->Forward(lat, lon, zone, northp, x, y);
+    }
+    catch(const std::exception &e)
+    {
+            std::cerr << "Caught exception on UTM/UPS Conversion: " << e.what() << "\n";
+            std::cout << "Exiting program" << std::endl;
+            exit(0);
+    }
+
+    std::string zonestr = UTMUPS->EncodeZone(zone, northp);
+    std::cout << std::fixed << std::setprecision(0) << zonestr << " " << x << " " << y << "\n";
+
+    }
+}
+
+/*
+* Display the main menu
+* param : void
+*/
+void GeoTools::displayMenu(void)
+{
+    std::cout << "**************MENU**************" << std::endl;
+    std::cout << "1 - Latitude/Longitude to MGRS" << std::endl; 
+    std::cout << "2 - Latitude/Longitude to UTMUPS" << std::endl;
+    std::cout << "3 - Decimal Degrees to DMS" << std::endl;
+    std::cout << "4 - Decimal Degrees to DMD" << std::endl;
+    std::cout << "5 - DMS to Decimal Degrees" << std::endl;
+    std::cout << "6 - DMD to Decimal Degrees" << std::endl;
+    std::cout << "7 - Latitude/Longitude to offset" << std::endl;
+    std::cout << "***********END OF MENU**********" << std::endl;
 }

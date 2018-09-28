@@ -21,6 +21,8 @@
 
 #include <iostream>
 #include <string>
+#include <iomanip>
+#include <exception>
 
 #include <GeographicLib/MGRS.hpp>
 #include <GeographicLib/UTMUPS.hpp>
@@ -32,11 +34,17 @@ class GeoTools
     public:
         GeoTools();
         ~GeoTools();
-        void format(std::string* mgrs, int prec);
-        void mgrsConvert();
+
+        static void format(std::string* mgrs, int prec);
+        void mgrsConvert(void);
+        void utmConvert(void);
+        void displayMenu(void);
 
         GeographicLib::MGRS *MGRS;
         GeographicLib::UTMUPS *UTMUPS;
+
+    private:
+        const std::string geoToolsVer = "0x01"; 
 
 };
 
