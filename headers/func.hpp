@@ -23,6 +23,10 @@
 #include <string>
 #include <iomanip>
 #include <exception>
+#include <cmath>
+#include <cstdint>
+
+#include "database.hpp"
 
 #include <GeographicLib/MGRS.hpp>
 #include <GeographicLib/UTMUPS.hpp>
@@ -36,8 +40,11 @@ class GeoTools
         ~GeoTools();
 
         static void format(std::string* mgrs, int prec);
+
         void mgrsConvert(void);
         void utmConvert(void);
+        void dmsConvert(void);
+
         void displayMenu(void);
 
         GeographicLib::MGRS *MGRS;

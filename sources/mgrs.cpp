@@ -36,9 +36,9 @@ int main(int argc, char const *argv[])
         std::cout << "under certain conditions; type `show c' for details. \n" << std::endl;
     }
 
-    
     //geoTools->utmConvert();
     //geoTools->mgrsConvert();
+    //geoTools->dmsConvert();
 
     return 0;
 }

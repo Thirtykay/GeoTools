@@ -192,7 +192,7 @@ void GeoTools::mgrsConvert(void)
 }
 
 /* @WIP
-* Convert any Latitude/Longitude coords type to a MGRS coord 
+* Convert any Latitude/Longitude coords type to a UTM coord 
 * param : void
 */
 void GeoTools::utmConvert(void)
@@ -205,14 +205,13 @@ void GeoTools::utmConvert(void)
 
     char cont = 'Y';
 
-        std::cout << "MGRS Converter ready" << std::endl;
+        std::cout << "UTM Converter ready" << std::endl;
         std::cout << "Enter your Lat & Long coords" << std::endl;
 
     while(cont == 'Y')
     {
         bool retryLat = true;
         bool retryLon = true;
-        bool retryPrec = true;
 
         while(retryLat == true)
         {
@@ -248,19 +247,140 @@ void GeoTools::utmConvert(void)
 
     try
     {
-
         UTMUPS->Forward(lat, lon, zone, northp, x, y);
     }
     catch(const std::exception &e)
     {
-            std::cerr << "Caught exception on UTM/UPS Conversion: " << e.what() << "\n";
+            std::cerr << "Caught exception on UTM Conversion: " << e.what() << "\n";
             std::cout << "Exiting program" << std::endl;
             exit(0);
     }
 
     std::string zonestr = UTMUPS->EncodeZone(zone, northp);
-    std::cout << std::fixed << std::setprecision(0) << zonestr << " " << x << " " << y << "\n";
 
+    std::cout << "Conversion done !" << std::endl;
+    std::cout << "Your UTM coords: ";
+
+    zonestr.insert(2, " ");
+    zonestr[3] = std::toupper(zonestr[3]);
+    std::cout << zonestr[3] << std::endl;
+
+    std::cout << std::fixed << std::setprecision(0) << zonestr << " " << x << " " << y << std::endl;
+
+    //Asking user if he want to launch the program again
+        std::cout << "New conversion ? (Y/n): ";
+        std::cin >> cont;
+
+        if(cont == 'Y')
+        {
+            system("clear");
+        }
+    }
+}
+
+void GeoTools::dmsConvert(void)
+{
+
+    float lat, lon;
+
+    char cont = 'Y';
+
+        std::cout << "DMS Converter ready" << std::endl;
+        std::cout << "Enter your Lat & Long coords" << std::endl;
+
+    while(cont == 'Y')
+    {
+        bool retryLat = true;
+        bool retryLon = true;
+
+        while(retryLat == true)
+        {
+            std::cout << "Latitude : ";
+            std::cin >> lat;
+
+            if(lat < -90 || lat > 90)
+            {
+                std::cout << "Bad value for lat" << std::endl;
+                std::cout << "Valid range for lat is -90d to 90d" << std::endl;
+            }
+            else
+            {
+                retryLat = false;
+            }
+        }
+
+        while(retryLon == true)
+        {
+            std::cout << "Longitude : ";
+            std::cin >> lon;
+
+            if(lon < -180 || lon > 180)
+            {
+                std::cout << "Bad value for lat" << std::endl;
+                std::cout << "Valid range for lat is -180d to 180d" << std::endl;
+            }
+            else
+            {
+                retryLon = false;
+            }
+        }
+
+        int degreesLat = std::floor(lat);
+        float i = lat - degreesLat; 
+        int minutesLat = std::floor(60 * (i));
+        int secondsLat = 3600 * (i) - 60 * minutesLat;
+
+        int degreesLon = std::floor(lon);
+        float j = lon - degreesLon; 
+        int minutesLon = std::floor(60 * (j));
+        int secondsLon = 3600 * (j) - 60 * minutesLon;
+
+        char ns;
+        char ew;
+
+        if(lat <= 0)
+        {        
+            ns = 'S';
+            degreesLat *= -1;
+        }
+        else ns = 'N';
+    
+        if(lon <= 0)
+        {
+            ew = 'W';
+            degreesLon *= -1;
+        }
+        else ew = 'E';
+
+        std::string sDegreesLat = std::to_string(degreesLat);
+        std::string sMinutesLat = std::to_string(minutesLat);
+        std::string sSecondsLat = std::to_string(secondsLat);
+
+        std::string sDegreesLon = std::to_string(degreesLon);
+        std::string sMinutesLon = std::to_string(minutesLon);
+        std::string sSecondsLon = std::to_string(secondsLon);
+
+        std::cout << "Conversion done !" << std::endl;
+        std::cout << "Latitude : ";
+
+        std::cout << ns;
+        std::cout << std::setw(2) << std::setfill('0') << sDegreesLat;
+        std::cout << "°"  + sMinutesLat + "'" + sSecondsLat + "\"" << std::endl;
+
+        std::cout << "Longitude : ";
+
+        std::cout << ew;
+        std::cout << std::setw(3) << std::setfill('0') << sDegreesLon;
+        std::cout << "°"  + sMinutesLon + "'" + sSecondsLon + "\"" << std::endl;
+
+        //Asking user if he want to launch the program again
+        std::cout << "New conversion ? (Y/n): ";
+        std::cin >> cont;
+
+        if(cont == 'Y')
+        {
+            system("clear");
+        }
     }
 }
 
